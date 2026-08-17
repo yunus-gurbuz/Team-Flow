@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 
-const schema = z.object({ token: z.string().min(8).max(200) });
+const schema = z.object({ token: z.string().min(1).max(200) });
 
 export const getPublicNote = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => schema.parse(input))

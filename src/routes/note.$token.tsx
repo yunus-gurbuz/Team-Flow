@@ -3,7 +3,12 @@ import { getPublicNote } from "@/lib/public-notes.functions";
 
 export const Route = createFileRoute("/note/$token")({
   loader: async ({ params }) => {
-    const note = await getPublicNote({ data: { token: params.token } });
+    let note: { title: string; content: string } | null = null;
+    try {
+      note = await getPublicNote({ data: { token: params.token } });
+    } catch {
+      throw notFound();
+    }
     if (!note) throw notFound();
     return { note };
   },
