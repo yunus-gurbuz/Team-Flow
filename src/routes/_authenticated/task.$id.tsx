@@ -214,7 +214,7 @@ function TaskDetail() {
           <div className="panel space-y-4 p-4">
             <div className="space-y-2">
               <Label>Status</Label>
-              <Select value={task.status} onValueChange={(v) => update.mutate({ status: v as TaskUpdate["status"] })}>
+              <Select value={task.status} onValueChange={(v) => update.mutate({ status: v as NonNullable<TaskUpdate["status"]> })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
