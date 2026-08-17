@@ -53,26 +53,15 @@ export function AppShell({ email, children }: { email: string; children: ReactNo
     const uid = userData.user?.id;
     if (!uid) return;
 
-    const { data, error } = await supabase
-      .from("organizations")
-      .insert({ name: trimmed, created_by: uid })
-      .select("id")
-      .single();
+    const { data, error } = await supabase.rpc("create_organization", { _name: trimmed });
     if (error || !data) {
       toast.error(error?.message ?? "Could not create workspace.");
-      return;
-    }
-    const { error: memberError } = await supabase
-      .from("org_members")
-      .insert({ org_id: data.id, user_id: uid, role: "admin" });
-    if (memberError) {
-      toast.error(memberError.message);
       return;
     }
     setName("");
     setCreating(false);
     refresh();
-    setOrgId(data.id);
+    setOrgId(data);
     toast.success(`${trimmed} is ready.`);
   }
 
