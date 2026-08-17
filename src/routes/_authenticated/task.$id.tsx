@@ -18,6 +18,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { notifyAssignment } from "@/lib/notifications.functions";
+import type { Database } from "@/integrations/supabase/types";
+
+type TaskUpdate = Database["public"]["Tables"]["tasks"]["Update"];
 
 export const Route = createFileRoute("/_authenticated/task/$id")({
   head: () => ({
@@ -93,7 +96,7 @@ function TaskDetail() {
   }, [task]);
 
   const update = useMutation({
-    mutationFn: async (patch: Record<string, unknown>) => {
+    mutationFn: async (patch: TaskUpdate) => {
       const { error } = await supabase.from("tasks").update(patch).eq("id", id);
       if (error) throw error;
     },
@@ -211,7 +214,7 @@ function TaskDetail() {
           <div className="panel space-y-4 p-4">
             <div className="space-y-2">
               <Label>Status</Label>
-              <Select value={task.status} onValueChange={(v) => update.mutate({ status: v })}>
+              <Select value={task.status} onValueChange={(v) => update.mutate({ status: v as TaskUpdate["status"] })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
