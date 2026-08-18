@@ -41,6 +41,8 @@ function TasksPage() {
   const [listName, setListName] = useState("");
   const [taskTitle, setTaskTitle] = useState("");
   const [activeList, setActiveList] = useState<string | null>(null);
+  const [editingList, setEditingList] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
 
   const orgId = org?.id;
 
