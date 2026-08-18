@@ -139,16 +139,61 @@ function TasksPage() {
         >
           All lists
         </Button>
-        {lists.map((l) => (
-          <Button
-            key={l.id}
-            size="sm"
-            variant={activeList === l.id ? "default" : "outline"}
-            onClick={() => setActiveList(l.id)}
-          >
-            {l.name}
-          </Button>
-        ))}
+        {lists.map((l) =>
+          editingList === l.id ? (
+            <form
+              key={l.id}
+              className="flex items-center gap-1"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const name = editingName.trim();
+                if (name && name !== l.name) renameList.mutate({ id: l.id, name });
+                else setEditingList(null);
+              }}
+            >
+              <Input
+                autoFocus
+                value={editingName}
+                onChange={(e) => setEditingName(e.target.value)}
+                onBlur={() => setEditingList(null)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setEditingList(null);
+                }}
+                className="h-8 w-32"
+              />
+              <Button size="sm" variant="ghost" type="submit" onMouseDown={(e) => e.preventDefault()}>
+                <Check className="size-4" />
+              </Button>
+            </form>
+          ) : (
+            <div key={l.id} className="group relative">
+              <Button
+                size="sm"
+                variant={activeList === l.id ? "default" : "outline"}
+                onClick={() => setActiveList(l.id)}
+                onDoubleClick={() => {
+                  setEditingList(l.id);
+                  setEditingName(l.name);
+                }}
+                className="pr-8"
+              >
+                {l.name}
+              </Button>
+              <button
+                type="button"
+                aria-label={`Rename ${l.name}`}
+                onClick={() => {
+                  setEditingList(l.id);
+                  setEditingName(l.name);
+                }}
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-0.5 opacity-60 hover:opacity-100"
+              >
+                <Pencil className="size-3" />
+              </button>
+            </div>
+          ),
+        )}
+
         <form
           className="flex gap-2"
           onSubmit={(e) => {
