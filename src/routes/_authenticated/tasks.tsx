@@ -89,6 +89,20 @@ function TasksPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const renameList = useMutation({
+    mutationFn: async ({ id, name }: { id: string; name: string }) => {
+      const { error } = await supabase.from("task_lists").update({ name }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setEditingList(null);
+      queryClient.invalidateQueries({ queryKey: ["lists", orgId] });
+      toast.success("List renamed");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+
   const addTask = useMutation({
     mutationFn: async (title: string) => {
       const { data: userData } = await supabase.auth.getUser();
